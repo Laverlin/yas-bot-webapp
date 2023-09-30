@@ -39,6 +39,11 @@ jobs:
         # If this is set to true, *every* commit will be treated as a new version.
         bump_each_commit: false
 
+    - name: patch package.json
+      run: |
+        mv ${{ github.workspace }}/package.json ${{ github.workspace }}/package.original.json
+        jq '.version = "${{ steps.semver.outputs.version }}"' ${{ github.workspace }}/package.original.json > ${{ github.workspace }}/package.json
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
