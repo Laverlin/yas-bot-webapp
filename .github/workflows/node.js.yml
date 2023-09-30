@@ -80,7 +80,7 @@ jobs:
 
     - name: Create Tag
       run: |
-        if [[ -z $(git tag -l "${{ steps.semver.outputs.version_tag }}") ]]; then
+        if [[ -z $(git -P tag -l "${{ steps.semver.outputs.version_tag }}") ]]; then
           git tag ${{ steps.semver.outputs.version_tag }}
           git push origin ${{ steps.semver.outputs.version_tag }}
         fi
