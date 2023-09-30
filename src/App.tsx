@@ -1,4 +1,4 @@
-import { useState, useEffect }  from 'react';
+import { useEffect }  from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { TelegramWebApps } from 'telegram-webapps-types';
