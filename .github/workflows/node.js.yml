@@ -54,7 +54,10 @@ jobs:
 
 
     - name: zip results
-      run: zip -r ${{ github.workspace }}/build-${{ steps.semver.outputs.version_tag }}.zip ${{ github.workspace }}/build
+      run: |
+        cd ${{ github.workspace }}/build
+        zip -r ${{ github.workspace }}/build-${{ steps.semver.outputs.version_tag }}.zip *
+        cd ${{ github.workspace }}
 
     - name: Create a Release
       id: create_release
