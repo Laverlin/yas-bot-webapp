@@ -20,7 +20,10 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - uses: paulhatch/semantic-version@v5.1.0
       id: semver
@@ -55,9 +58,9 @@ jobs:
 
     - name: zip results
       run: |
-        cd ${{ github.workspace }}/build
+        pushd ${{ github.workspace }}/build
         zip -r ${{ github.workspace }}/build-${{ steps.semver.outputs.version_tag }}.zip *
-        cd ${{ github.workspace }}
+        popd
 
     - name: Create a Release
       id: create_release
