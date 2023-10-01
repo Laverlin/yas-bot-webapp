@@ -7,7 +7,7 @@ import packageJson from '../../package.json';
 import { right } from '@popperjs/core';
 
 interface IUser {
-    userId: number
+    userId: string
 }
 
 const AppToolbar: React.FC<IUser> = (user) => {
