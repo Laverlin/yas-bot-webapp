@@ -35,8 +35,8 @@ const RouteList: React.FC<IUser> = (user) => {
           console.log(e);
         }
      };
-     fetchRoutes();
-      
+     if (user.userId !== "" && yasRoutes.length === 0)
+        fetchRoutes();
     });
 
     
@@ -53,7 +53,7 @@ const RouteList: React.FC<IUser> = (user) => {
         <Box sx={{ width: '100%' }}>
             <Stack spacing={2}>
                 {yasRoutes.map((route) => 
-                    <Item key={route.routeId}> {route.RouteName} </Item>
+                    <Item key={route.RouteId}> {route.RouteName} </Item>
                 )}
 
             </Stack>

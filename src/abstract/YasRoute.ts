@@ -1,7 +1,7 @@
 import { IWayPoint } from "./IWayPoint";
 
 export interface IYasRoute {
-    routeId: number,
+    RouteId: number,
     userId: number,
     RouteName: string,
     RouteDate: Date,
