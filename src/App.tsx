@@ -1,20 +1,11 @@
 import { useEffect }  from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { TelegramWebApps } from 'telegram-webapps-types';
+import AppToolbar from './components/AppToolbar';
+import RouteList from './components/RouteList';
 
-
-
-//const tele = window.Telegram.WebApp;
 
 const teleApp = (window as any).Telegram?.WebApp as TelegramWebApps.WebApp;
-
-
-export interface ITelegramContext {
-  webApp?: TelegramWebApps.WebApp;
-  user?: TelegramWebApps.WebAppUser;
-}
-
 
 
 function App() {
@@ -22,20 +13,15 @@ function App() {
     teleApp.ready();
   });
 
-  const teleUser = teleApp.initDataUnsafe.user;
-
   
+  var teleUser = teleApp.initDataUnsafe.user;
+
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          ID: {teleUser?.id}
-        </p>
-
-      </header>
-    </div>
+    <>
+      <AppToolbar userId={teleUser?.id ?? 0} />
+      <RouteList userId={teleUser?.id ?? 0} />
+    </>
   );
 }
 
