@@ -40,7 +40,7 @@ const RouteList: React.FC<IUser> = (user) => {
     });
 
     
-    if (yasRoutes.length === 0) {
+    if (!Array.isArray(yasRoutes) || yasRoutes.length === 0) {
         return (
             <Paper sx={{ width: '100%' }}>
                 <Typography variant='body1' >

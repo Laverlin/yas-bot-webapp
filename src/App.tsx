@@ -3,7 +3,6 @@ import { TelegramWebApps } from 'telegram-webapps-types';
 import AppToolbar from './components/AppToolbar';
 import RouteList from './components/RouteList';
 import { DefaultYasUser, IYasUser } from './abstract/YasUser'
-import config from './config.json'
 
 
 const teleApp = (window as any).Telegram?.WebApp as TelegramWebApps.WebApp;
@@ -19,7 +18,7 @@ function App() {
     const fetchUser = async () => {
       console.log("fetch user call");
       try {
-        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id ?? config.defaultId}`);
+        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id}`);
         const data = await response.json();
         setYasUser(data);
       }
@@ -27,8 +26,8 @@ function App() {
         console.log(e);
       }
    };
-
-   fetchUser();
+   if (yasUser.telegramId === DefaultYasUser.telegramId)
+      fetchUser();
     
   });
   
