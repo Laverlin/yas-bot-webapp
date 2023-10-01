@@ -28,10 +28,9 @@ function App() {
       }
    };
 
-   if (yasUser.userId === 0)
-      fetchUser();
+   fetchUser();
     
-  }, []);
+  });
   
 
 
