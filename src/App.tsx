@@ -14,11 +14,11 @@ function App() {
   useEffect(() => {
     teleApp.ready();
     var teleUser = teleApp.initDataUnsafe.user;
+    console.log(teleApp);
 
     const fetchUser = async () => {
-      console.log("fetch user call");
       try {
-        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id ?? 200352025 }`);
+        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id}`);
         if (response.ok)
           setYasUser(await response.json());
       }
@@ -37,6 +37,9 @@ function App() {
     <>
       <AppToolbar userId={ yasUser.publicId } />
       <RouteList userId={ yasUser.publicId } />
+      <div>
+        {JSON.stringify(teleApp.initDataUnsafe)}
+      </div>
     </>
   );
 }
