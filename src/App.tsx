@@ -10,15 +10,17 @@ const teleApp = (window as any).Telegram?.WebApp as TelegramWebApps.WebApp;
 
 function App() {
   const [yasUser, setYasUser ] = useState<IYasUser>(DefaultYasUser);
+  const [tUser, setTUser] = useState<TelegramWebApps.WebAppUser>();
 
   useEffect(() => {
     teleApp.ready();
     var teleUser = teleApp.initDataUnsafe.user;
     console.log(teleApp);
+    setTUser(teleUser);
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id}`);
+        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${tUser?.id}`);
         if (response.ok)
           setYasUser(await response.json());
       }
@@ -29,7 +31,7 @@ function App() {
   
     fetchUser();
     
-  }, []);
+  }, [tUser]);
   
 
 
@@ -38,7 +40,8 @@ function App() {
       <AppToolbar userId={ yasUser.publicId } />
       <RouteList userId={ yasUser.publicId } />
       <div>
-        {JSON.stringify(teleApp.initDataUnsafe)}
+        all: {JSON.stringify(teleApp.initDataUnsafe)}
+        my: {JSON.stringify(tUser)}
       </div>
     </>
   );
