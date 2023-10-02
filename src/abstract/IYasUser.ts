@@ -3,7 +3,7 @@ export interface IYasUser {
     publicId: string,
     telegramId: number,
     userName: string,
-    registerTime: Date
+    registerTime: string
 }
 
 export const DefaultYasUser = {

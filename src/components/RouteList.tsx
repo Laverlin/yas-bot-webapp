@@ -2,17 +2,10 @@ import { useEffect, useState }  from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import { IYasRoute } from '../abstract/IYasRoute';
+import { format } from 'date-fns'
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 
 interface IUser {
@@ -52,7 +45,17 @@ const RouteList: React.FC<IUser> = (user) => {
         <Box sx={{ width: '100%' }}>
             <Stack spacing={2}>
                 {yasRoutes.map((route) => 
-                    <Item key={route.RouteId}> {route.RouteName} </Item>
+                    <Paper key={route.RouteId} sx={{padding:'15px', margin: '5px'}}>
+                        <Typography variant='body1'>
+                            <b>{route.RouteName}</b>
+                        </Typography>
+                        <Typography variant='caption'>
+                            { format(new Date(route.RouteDate), "do MMM yyyy") },&nbsp;{ format(new Date(route.RouteDate), "HH:mm") }
+                        </Typography>
+
+                    </Paper>
+
+
                 )}
 
             </Stack>

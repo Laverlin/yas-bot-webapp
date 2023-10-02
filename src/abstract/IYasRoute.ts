@@ -4,6 +4,6 @@ export interface IYasRoute {
     RouteId: number,
     UserId: number,
     RouteName: string,
-    RouteDate: Date,
+    RouteDate: string,
     WayPoints: IWayPoint[] 
 }

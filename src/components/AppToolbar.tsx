@@ -31,6 +31,8 @@ const AppToolbar: React.FC<IUser> = (user) => {
         setIsOpen(false);
     };
 
+    const isShowCopyIcon = user.userId === "" ? 'hidden':'visible';
+
     const actionSnackbar = (
         <React.Fragment>
           <IconButton
@@ -51,13 +53,14 @@ const AppToolbar: React.FC<IUser> = (user) => {
                 <Toolbar>
                 <Stack sx={{ width: '100%' }}>
                     <Stack direction="row">
-                        <Box src={logo} component="img" sx={{height: 32, width: 32, paddingTop: '5px', marginRight: '5px'}}></Box>
+                        <Box src={logo} component="img" sx={{ height: 32, width: 32, paddingTop: '5px', marginRight: '5px' }}></Box>
                         <Typography variant="h5" sx={{ marginTop: '6px' }}>
                             Routes 
                         </Typography>
-                        <IconButton onClick={ () => copyToken(user.userId) }
-                            sx={{height: 16, width: 16, margin: '5px', marginLeft: auto}} >
-                            <ContentCopyIcon sx={{height: 16, width: 16, color:'white' }}></ContentCopyIcon>
+                        <IconButton size='small'
+                            onClick={ () => copyToken(user.userId) }
+                            sx={{ height: 20, width: 20, margin: '3px', marginLeft: auto, visibility: isShowCopyIcon }} >
+                            <ContentCopyIcon sx={{ height: 14, width: 14, color:'white' }} />
                         </IconButton>
                         <Typography variant='subtitle2' sx={{ textAlign:'start', paddingTop: '3px' }} >
                             {user.userId}
