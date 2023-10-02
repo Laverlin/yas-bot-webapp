@@ -2,7 +2,7 @@ import { useEffect, useState }  from 'react';
 import { TelegramWebApps } from 'telegram-webapps-types';
 import AppToolbar from './components/AppToolbar';
 import RouteList from './components/RouteList';
-import { DefaultYasUser, IYasUser } from './abstract/YasUser'
+import { DefaultYasUser, IYasUser } from './abstract/IYasUser'
 
 
 const teleApp = (window as any).Telegram?.WebApp as TelegramWebApps.WebApp;
@@ -18,18 +18,18 @@ function App() {
     const fetchUser = async () => {
       console.log("fetch user call");
       try {
-        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id}`);
-        const data = await response.json();
-        setYasUser(data);
+        const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id ?? 200352025 }`);
+        if (response.ok)
+          setYasUser(await response.json());
       }
       catch(e){
         console.log(e);
       }
-   };
-   if (yasUser.telegramId === DefaultYasUser.telegramId)
-      fetchUser();
+    };
+  
+    fetchUser();
     
-  });
+  }, []);
   
 
 

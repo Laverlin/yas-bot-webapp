@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import { IYasRoute } from '../abstract/YasRoute';
+import { IYasRoute } from '../abstract/IYasRoute';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -20,24 +20,23 @@ interface IUser {
 }
 
 const RouteList: React.FC<IUser> = (user) => {
-    
-    const [yasRoutes, setYasRoutes ] = useState<IYasRoute[]>([]);
+
+    const [yasRoutes, setYasRoutes] = useState<IYasRoute[]>([]);
 
     useEffect(() => {
-      const fetchRoutes = async () => {
-        try {
-          const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${user.userId}/route`);
-          const data = await response.json();
-          console.log(data);
-          setYasRoutes(data);
-        }
-        catch(e){
-          console.log(e);
-        }
-     };
-     if (user.userId !== "" && yasRoutes.length === 0)
-        fetchRoutes();
-    });
+        const fetchRoutes = async () => {
+            try {
+                const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${user.userId}/route`);
+                const data = await response.json();
+                setYasRoutes(data);
+            }
+                catch(e){
+                console.log(e);
+            }
+        };
+        if (user.userId !== "")
+            fetchRoutes();
+    }, [user.userId]);
 
     
     if (!Array.isArray(yasRoutes) || yasRoutes.length === 0) {
