@@ -16,7 +16,7 @@ function App() {
 
       const fetchUser = async () => {
         try {
-          const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id ?? 200352025}`);
+          const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id}`);
           if (response.ok)
             setYasUser(await response.json());
         }
