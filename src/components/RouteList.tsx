@@ -2,10 +2,18 @@ import { useEffect, useState }  from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { Typography } from '@mui/material';
+import { IconButton, Typography, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 import { IYasRoute } from '../abstract/IYasRoute';
-import { format } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
+import { styled } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
+import RoomIcon from '@mui/icons-material/RoomOutlined'
 
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    padding: theme.spacing(1),
+    color: theme.palette.text.secondary,
+  }));
 
 
 interface IUser {
@@ -15,6 +23,15 @@ interface IUser {
 const RouteList: React.FC<IUser> = (user) => {
 
     const [yasRoutes, setYasRoutes] = useState<IYasRoute[]>([]);
+    const [selectedRoute, setSelectedRoute] = useState<IYasRoute>();
+
+    const onClickDelete = (route: IYasRoute) => {
+        setSelectedRoute(route);
+    }
+
+    const handleCloseConfirmation = (routeId: number | undefined, isDelete: boolean) => {
+        setSelectedRoute(undefined);
+    }
 
     useEffect(() => {
         const fetchRoutes = async () => {
@@ -41,25 +58,57 @@ const RouteList: React.FC<IUser> = (user) => {
             </Paper>
         )
     }
+
     return (
-        <Box sx={{ width: '100%' }}>
-            <Stack spacing={2}>
-                {yasRoutes.map((route) => 
-                    <Paper key={route.RouteId} sx={{padding:'15px', margin: '5px'}}>
-                        <Typography variant='body1'>
-                            <b>{route.RouteName}</b>
-                        </Typography>
-                        <Typography variant='caption'>
-                            { format(new Date(route.RouteDate), "do MMM yyyy") },&nbsp;{ format(new Date(route.RouteDate), "HH:mm") }
-                        </Typography>
+        <>
+            <Box sx={{ width: '100%' }}>
+                <Stack spacing={1} sx={{ margin:'5px'}}>
+                    {yasRoutes.map((route) => 
+                        <Item key={route.RouteId}>
+                            <Stack direction="row" sx={{alignItems:'center'}}>
+                                <Box sx={{width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                                    <Typography variant='body1' component="span" sx={{fontWeight: 'bold', paddingTop:'15px'}}>
+                                        {route.RouteName}
+                                    </Typography>
+                                    <Chip icon={<RoomIcon/>} label={route.WayPoints.length} size='small' sx={{fontSize:'10px', marginLeft: '10px', marginBottom:'15px'}}/>
+                                    
+                                    <Typography variant='caption' component="div">
+                                        { format(new Date(route.RouteDate), "do MMM yyyy") },&nbsp;{ format(new Date(route.RouteDate), "HH:mm") }
+                                    </Typography>
+                                    <Typography variant='caption' component="div">
+                                        { formatDistanceToNow(new Date(route.RouteDate),{addSuffix: true}) }
+                                    </Typography>
+                                </Box>
+                                <IconButton 
+                                    onClick={ () => onClickDelete(route) }
+                                    size="large" sx={{height: 50, width: 50}}
+                                >
+                                    <DeleteIcon fontSize='medium'/>
+                                </IconButton>
+                            </Stack>
+                        </Item>
+                    )}
+                </Stack>
+            </Box>
 
-                    </Paper>
-
-
-                )}
-
-            </Stack>
-        </Box>
+            <Dialog
+                open={ selectedRoute !== undefined }
+                onClose={ () => handleCloseConfirmation(0, false) }
+            >
+                <DialogTitle>
+                    {"Please Confirm"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        The route <b>{selectedRoute?.RouteName}</b> will be deleted.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={ () => handleCloseConfirmation(0, false) } variant="contained" autoFocus> Cancel </Button>
+                    <Button onClick={ () => handleCloseConfirmation(selectedRoute?.RouteId, true) }> Ok </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 }
 

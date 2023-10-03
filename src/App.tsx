@@ -4,7 +4,6 @@ import AppToolbar from './components/AppToolbar';
 import RouteList from './components/RouteList';
 import { DefaultYasUser, IYasUser } from './abstract/IYasUser'
 
-
 const teleApp = (window as any).Telegram?.WebApp as TelegramWebApps.WebApp;
 
 function App() {
@@ -16,11 +15,11 @@ function App() {
 
       const fetchUser = async () => {
         try {
-          const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id}`);
+          const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${teleUser?.id ?? process.env.REACT_APP_FALLBACK_UID}`);
           if (response.ok)
             setYasUser(await response.json());
         }
-        catch(e){
+        catch(e) {
           console.log(e);
         }
       };
