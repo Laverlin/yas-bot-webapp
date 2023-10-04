@@ -2,12 +2,13 @@ import { useEffect, useState }  from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { IconButton, Typography, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { IconButton, Typography, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField } from '@mui/material';
 import { IYasRoute } from '../abstract/IYasRoute';
 import { format, formatDistanceToNow } from 'date-fns'
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import RoomIcon from '@mui/icons-material/RoomOutlined'
+import EditIcon from '@mui/icons-material/EditOutlined'
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -24,14 +25,31 @@ const RouteList: React.FC<IUser> = (user) => {
 
     const [yasRoutes, setYasRoutes] = useState<IYasRoute[]>([]);
     const [selectedRoute, setSelectedRoute] = useState<IYasRoute>();
+    const [isDeleteOpen, setDeleteOpen] = useState(false);
+    const [isRenameOpen, setRenameOpen] = useState(false);
+    const [routeName, setRouteName] = useState("");
 
     const onClickDelete = (route: IYasRoute) => {
+        setDeleteOpen(true);
         setSelectedRoute(route);
     }
 
-    const handleCloseConfirmation = (routeId: number | undefined, isDelete: boolean) => {
+    const handleCloseDelete = (routeId: number | undefined = 0, isDelete: boolean = false) => {
+        setDeleteOpen(false);
         setSelectedRoute(undefined);
     }
+
+    const onClickRename = (route: IYasRoute) => {
+        setRenameOpen(true);
+        setSelectedRoute(route);
+        setRouteName(route.RouteName);
+    }
+
+    const handleCloseRename = (routeId: number | undefined = 0, newName: string = '', isRename: boolean = false) => {
+        setRenameOpen(false);
+        setSelectedRoute(undefined);
+    }
+
 
     useEffect(() => {
         const fetchRoutes = async () => {
@@ -79,12 +97,20 @@ const RouteList: React.FC<IUser> = (user) => {
                                         { formatDistanceToNow(new Date(route.RouteDate),{addSuffix: true}) }
                                     </Typography>
                                 </Box>
-                                <IconButton 
-                                    onClick={ () => onClickDelete(route) }
-                                    size="large" sx={{height: 50, width: 50}}
-                                >
-                                    <DeleteIcon fontSize='medium'/>
-                                </IconButton>
+                                <Stack>
+                                    <IconButton 
+                                        onClick={ () => onClickRename(route) }
+                                        size="large" sx={{height: 50, width: 50}}
+                                    >
+                                        <EditIcon fontSize='medium'/>
+                                    </IconButton> 
+                                    <IconButton 
+                                        onClick={ () => onClickDelete(route) }
+                                        size="large" sx={{height: 50, width: 50}}
+                                    >
+                                        <DeleteIcon fontSize='medium'/>
+                                    </IconButton>
+                                </Stack>
                             </Stack>
                         </Item>
                     )}
@@ -92,8 +118,37 @@ const RouteList: React.FC<IUser> = (user) => {
             </Box>
 
             <Dialog
-                open={ selectedRoute !== undefined }
-                onClose={ () => handleCloseConfirmation(0, false) }
+                open={ isRenameOpen }
+                onClose={ () => handleCloseRename() }
+                fullWidth
+            >
+                <DialogTitle>
+                    Rename <b>{ selectedRoute?.RouteName }</b>
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText component="div">
+                        <TextField
+                            variant='outlined'
+                            label='new name'
+                            value={ routeName }
+                            size='small'
+                            fullWidth
+                            sx={{ marginTop: '20px' }}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                setRouteName(event.target.value);
+                              }}
+                        />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={ () => handleCloseRename() }> Cancel </Button>
+                    <Button onClick={ () => handleCloseRename(selectedRoute?.RouteId, '', true) } variant="contained" autoFocus> Ok </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={ isDeleteOpen }
+                onClose={ () => handleCloseDelete(0, false) }
             >
                 <DialogTitle>
                     {"Please Confirm"}
@@ -104,10 +159,13 @@ const RouteList: React.FC<IUser> = (user) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={ () => handleCloseConfirmation(0, false) } variant="contained" autoFocus> Cancel </Button>
-                    <Button onClick={ () => handleCloseConfirmation(selectedRoute?.RouteId, true) }> Ok </Button>
+                    <Button onClick={ () => handleCloseDelete(0, false) } variant="contained" autoFocus> Cancel </Button>
+                    <Button onClick={ () => handleCloseDelete(selectedRoute?.RouteId, true) }> Ok </Button>
                 </DialogActions>
             </Dialog>
+
+
+
         </>
     );
 }
