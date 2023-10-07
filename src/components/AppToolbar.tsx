@@ -12,11 +12,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, Snackbar } from '@mui/material';
 
 interface IUser {
-    userId: string
+    token: string
 }
-
-
-
 
 const AppToolbar: React.FC<IUser> = (user) => {
     
@@ -31,7 +28,7 @@ const AppToolbar: React.FC<IUser> = (user) => {
         setIsOpen(false);
     };
 
-    const isShowCopyIcon = user.userId === "" ? 'hidden':'visible';
+    const isShowCopyIcon = user.token === "" ? 'hidden':'visible';
 
     const actionSnackbar = (
         <React.Fragment>
@@ -58,12 +55,12 @@ const AppToolbar: React.FC<IUser> = (user) => {
                             Routes 
                         </Typography>
                         <IconButton size='small'
-                            onClick={ () => copyToken(user.userId) }
+                            onClick={ () => copyToken(user.token) }
                             sx={{ height: 20, width: 20, margin: '3px', marginLeft: auto, visibility: isShowCopyIcon }} >
                             <ContentCopyIcon sx={{ height: 14, width: 14, color:'white' }} />
                         </IconButton>
                         <Typography variant='subtitle2' sx={{ textAlign:'start', paddingTop: '3px' }} >
-                            {user.userId}
+                            {user.token}
                         </Typography>
                     </Stack>
                     <Typography variant='caption' component='span' sx={{ flexGrow: 1, textAlign: right, marginTop: 'auto' }}>

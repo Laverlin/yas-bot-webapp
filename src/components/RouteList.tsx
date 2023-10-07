@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import RoomIcon from '@mui/icons-material/RoomOutlined'
 import EditIcon from '@mui/icons-material/EditOutlined'
+import { FetchDeleteRoute, FetchRenameRoute, FetchRoutes } from '../fetcher';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -18,7 +19,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 interface IUser {
-    userId: string
+    token: string
 }
 
 const RouteList: React.FC<IUser> = (user) => {
@@ -35,6 +36,13 @@ const RouteList: React.FC<IUser> = (user) => {
     }
 
     const handleCloseDelete = (routeId: number | undefined = 0, isDelete: boolean = false) => {
+        if (isDelete) {
+            FetchDeleteRoute(user.token, routeId)
+                .then(isOk => {
+                    if (isOk) {
+                        FetchRoutes(user.token).then(routes => setYasRoutes(routes));
+                }});
+        }
         setDeleteOpen(false);
         setSelectedRoute(undefined);
     }
@@ -42,29 +50,26 @@ const RouteList: React.FC<IUser> = (user) => {
     const onClickRename = (route: IYasRoute) => {
         setRenameOpen(true);
         setSelectedRoute(route);
-        setRouteName(route.RouteName);
+        setRouteName(route.routeName);
     }
 
     const handleCloseRename = (routeId: number | undefined = 0, newName: string = '', isRename: boolean = false) => {
+        if (isRename) {
+            FetchRenameRoute(user.token, routeId, newName)
+                .then(isOk => {
+                    if (isOk) {
+                        FetchRoutes(user.token).then(routes => setYasRoutes(routes));
+                }});
+        }
         setRenameOpen(false);
         setSelectedRoute(undefined);
     }
 
 
     useEffect(() => {
-        const fetchRoutes = async () => {
-            try {
-                const response = await fetch(`https://ivan-b.com/api/v2.0/YASail/${user.userId}/route`);
-                const data = await response.json();
-                setYasRoutes(data);
-            }
-                catch(e){
-                console.log(e);
-            }
-        };
-        if (user.userId !== "")
-            fetchRoutes();
-    }, [user.userId]);
+        if (user.token !== "")
+            FetchRoutes(user.token).then(routes => setYasRoutes(routes));
+    }, [user.token]);
 
     
     if (!Array.isArray(yasRoutes) || yasRoutes.length === 0) {
@@ -82,19 +87,19 @@ const RouteList: React.FC<IUser> = (user) => {
             <Box sx={{ width: '100%' }}>
                 <Stack spacing={1} sx={{ margin:'5px'}}>
                     {yasRoutes.map((route) => 
-                        <Item key={route.RouteId}>
+                        <Item key={route.routeId}>
                             <Stack direction="row" sx={{alignItems:'center'}}>
                                 <Box sx={{width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
                                     <Typography variant='body1' component="span" sx={{fontWeight: 'bold', paddingTop:'15px'}}>
-                                        {route.RouteName}
+                                        {route.routeName}
                                     </Typography>
-                                    <Chip icon={<RoomIcon/>} label={route.WayPoints.length} size='small' sx={{fontSize:'10px', marginLeft: '10px', marginBottom:'15px'}}/>
+                                    <Chip icon={<RoomIcon/>} label={route.waypoints.length} size='small' sx={{fontSize:'10px', marginLeft: '10px', marginBottom:'15px'}}/>
                                     
                                     <Typography variant='caption' component="div">
-                                        { format(new Date(route.RouteDate), "do MMM yyyy") },&nbsp;{ format(new Date(route.RouteDate), "HH:mm") }
+                                        { format(new Date(route.routeDate), "do MMM yyyy") },&nbsp;{ format(new Date(route.routeDate), "HH:mm") }
                                     </Typography>
                                     <Typography variant='caption' component="div">
-                                        { formatDistanceToNow(new Date(route.RouteDate),{addSuffix: true}) }
+                                        { formatDistanceToNow(new Date(route.routeDate),{addSuffix: true}) }
                                     </Typography>
                                 </Box>
                                 <Stack>
@@ -123,7 +128,7 @@ const RouteList: React.FC<IUser> = (user) => {
                 fullWidth
             >
                 <DialogTitle>
-                    Rename <b>{ selectedRoute?.RouteName }</b>
+                    Rename <b>{ selectedRoute?.routeName }</b>
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText component="div">
@@ -142,7 +147,7 @@ const RouteList: React.FC<IUser> = (user) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={ () => handleCloseRename() }> Cancel </Button>
-                    <Button onClick={ () => handleCloseRename(selectedRoute?.RouteId, '', true) } variant="contained" autoFocus> Ok </Button>
+                    <Button onClick={ () => handleCloseRename(selectedRoute?.routeId, routeName, true) } variant="contained" autoFocus> Ok </Button>
                 </DialogActions>
             </Dialog>
 
@@ -155,17 +160,14 @@ const RouteList: React.FC<IUser> = (user) => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        The route <b>{selectedRoute?.RouteName}</b> will be deleted.
+                        The route <b>{selectedRoute?.routeName}</b> will be deleted.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={ () => handleCloseDelete(0, false) } variant="contained" autoFocus> Cancel </Button>
-                    <Button onClick={ () => handleCloseDelete(selectedRoute?.RouteId, true) }> Ok </Button>
+                    <Button onClick={ () => handleCloseDelete() } variant="contained" autoFocus> Cancel </Button>
+                    <Button onClick={ () => handleCloseDelete(selectedRoute?.routeId, true) }> Ok </Button>
                 </DialogActions>
             </Dialog>
-
-
-
         </>
     );
 }

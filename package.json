@@ -1,6 +1,6 @@
 {
   "name": "yas-bot-webapp",
-  "homepage": "https://ivan-b.com/yasbot/",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
