@@ -1,7 +1,7 @@
 import { IYasRoute } from "./abstract/IYasRoute";
 import { DefaultYasUser, IYasUser } from "./abstract/IYasUser";
 
-const baseUrl = window.location.origin; // "https://ib-nuc.ivan-b.com" //
+const baseUrl = window.location.hostname === "localhost" ? "https://ib-nuc.ivan-b.com" : window.location.origin; 
 
 export async function FetchUser(telegramId: number): Promise<IYasUser> {
     var yasUser = DefaultYasUser;

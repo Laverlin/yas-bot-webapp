@@ -2,7 +2,7 @@ import { useEffect, useState }  from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { IconButton, Typography, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField } from '@mui/material';
+import { IconButton, Typography, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField, Backdrop, CircularProgress } from '@mui/material';
 import { IYasRoute } from '../abstract/IYasRoute';
 import { format, formatDistanceToNow } from 'date-fns'
 import { styled } from '@mui/material/styles';
@@ -29,6 +29,7 @@ const RouteList: React.FC<IUser> = (user) => {
     const [isDeleteOpen, setDeleteOpen] = useState(false);
     const [isRenameOpen, setRenameOpen] = useState(false);
     const [routeName, setRouteName] = useState("");
+    const [isInProgress, setProgress] = useState(false);
 
     const onClickDelete = (route: IYasRoute) => {
         setDeleteOpen(true);
@@ -37,11 +38,13 @@ const RouteList: React.FC<IUser> = (user) => {
 
     const handleCloseDelete = (routeId: number | undefined = 0, isDelete: boolean = false) => {
         if (isDelete) {
+            setProgress(true);
             FetchDeleteRoute(user.token, routeId)
                 .then(isOk => {
                     if (isOk) {
                         FetchRoutes(user.token).then(routes => setYasRoutes(routes));
-                }});
+                }})
+                .finally(() => setProgress(false));
         }
         setDeleteOpen(false);
         setSelectedRoute(undefined);
@@ -55,20 +58,30 @@ const RouteList: React.FC<IUser> = (user) => {
 
     const handleCloseRename = (routeId: number | undefined = 0, newName: string = '', isRename: boolean = false) => {
         if (isRename) {
+            setProgress(true);
             FetchRenameRoute(user.token, routeId, newName)
                 .then(isOk => {
                     if (isOk) {
                         FetchRoutes(user.token).then(routes => setYasRoutes(routes));
-                }});
+                }})
+                .finally(() => setProgress(false));
         }
         setRenameOpen(false);
         setSelectedRoute(undefined);
     }
 
+    const handleCloseProgress = () => {
+        setProgress(false);
+    }
+
 
     useEffect(() => {
-        if (user.token !== "")
-            FetchRoutes(user.token).then(routes => setYasRoutes(routes));
+        if (user.token !== ""){
+            setProgress(true);
+            FetchRoutes(user.token)
+                .then(routes => setYasRoutes(routes))
+                .finally(() => setProgress(false));
+        }
     }, [user.token]);
 
     
@@ -86,12 +99,12 @@ const RouteList: React.FC<IUser> = (user) => {
         <>
             <Box sx={{ width: '100%' }}>
                 <Stack spacing={1} sx={{ margin:'5px'}}>
-                    {yasRoutes.map((route) => 
+                    { yasRoutes.map((route) => 
                         <Item key={route.routeId}>
                             <Stack direction="row" sx={{alignItems:'center'}}>
                                 <Box sx={{width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
                                     <Typography variant='body1' component="span" sx={{fontWeight: 'bold', paddingTop:'15px'}}>
-                                        {route.routeName}
+                                        { route.routeName }
                                     </Typography>
                                     <Chip icon={<RoomIcon/>} label={route.waypoints.length} size='small' sx={{fontSize:'10px', marginLeft: '10px', marginBottom:'15px'}}/>
                                     
@@ -168,6 +181,14 @@ const RouteList: React.FC<IUser> = (user) => {
                     <Button onClick={ () => handleCloseDelete(selectedRoute?.routeId, true) }> Ok </Button>
                 </DialogActions>
             </Dialog>
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={isInProgress}
+                onClick={handleCloseProgress}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     );
 }
