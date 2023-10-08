@@ -3,7 +3,7 @@ import { TelegramWebApps } from 'telegram-webapps-types';
 import AppToolbar from './components/AppToolbar';
 import RouteList from './components/RouteList';
 import { DefaultYasUser, IYasUser } from './abstract/IYasUser'
-import { FetchUser } from './fetcher';
+import { FetchUser } from './utils/fetcher';
 
 const teleApp = (window as any).Telegram?.WebApp as TelegramWebApps.WebApp;
 

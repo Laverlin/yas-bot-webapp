@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import RoomIcon from '@mui/icons-material/RoomOutlined'
 import EditIcon from '@mui/icons-material/EditOutlined'
-import { FetchDeleteRoute, FetchRenameRoute, FetchRoutes } from '../fetcher';
+import { FetchDeleteRoute, FetchRenameRoute, FetchRoutes } from '../utils/fetcher';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
