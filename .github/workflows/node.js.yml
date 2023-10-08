@@ -25,19 +25,17 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: paulhatch/semantic-version@v5.1.0
+    - name: generate semver
+      uses: paulhatch/semantic-version@v5.1.0
       id: semver
+      if: ${{ !contains(github.event.head_commit.message, '[MINOR]') && !contains(github.event.head_commit.message, '[MAJOR]') }}
       with:
         tag_prefix: "v"
-        major_pattern: "(MAJOR)"
-        minor_pattern: "(MINOR)"
+        major_pattern: "[MAJOR]"
+        minor_pattern: "[MINOR]"
         search_commit_body: true
-        # A string to determine the format of the version output
-        # version_format: "${major}.${minor}.${patch}-prerelease${increment}"
-        version_format: "${major}.${minor}.${patch}-beta+${increment}"
+        version_format: ${major}.${minor}.${patch}${{ (!contains(github.event.head_commit.message, '[MINOR]') && !contains(github.event.head_commit.message, '[MAJOR]')) && '-beta+${increment}' || '' }}
 
-        # If this is set to true, *every* commit will be treated as a new version.
-        bump_each_commit: false
 
     - name: patch package.json
       run: |
