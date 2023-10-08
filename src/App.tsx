@@ -13,7 +13,8 @@ function App() {
     useEffect(() => {
       teleApp.ready();
       var teleUser = teleApp.initDataUnsafe.user;
-      FetchUser(teleUser?.id ?? Number(process.env.REACT_APP_FALLBACK_UID))
+      var fallbackTid = window.location.hash.length > 0 ? window.location.hash.replace('#', '') : process.env.REACT_APP_FALLBACK_UID;
+      FetchUser(teleUser?.id ?? Number(fallbackTid))
         .then(yasUser => setYasUser(yasUser));
     }, []);
 
