@@ -77,10 +77,8 @@ const RouteList: React.FC<IUser> = (user) => {
 
     useEffect(() => {
         if (user.token !== ""){
-            setProgress(true);
             FetchRoutes(user.token)
-                .then(routes => setYasRoutes(routes))
-                .finally(() => setProgress(false));
+                .then(routes => setYasRoutes(routes));
         }
     }, [user.token]);
 
