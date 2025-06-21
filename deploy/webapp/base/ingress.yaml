@@ -11,7 +11,7 @@ spec:
       kind: Rule
       services:
         - name: yas-bot-webapp
-          port: 8080
+          port: 80
           namespace: sailingapp
   tls:
     secretName: watchface-tls
