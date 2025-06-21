@@ -7,11 +7,25 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(``) && PathPrefix(`/yas-bot/`)
+    - match: Host(``) && PathPrefix(`/yas-bot`)
       kind: Rule
       services:
         - name: yas-bot-webapp
           port: 80
           namespace: sailingapp
+      middlewares:
+        - name: yas-bot-webapp-stripprefix
+          namespace: watchface
   tls:
     secretName: watchface-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: yas-bot-webapp-stripprefix
+  namespace: watchface
+spec:
+  stripPrefix:
+    prefixes:
+      - /yas-bot
