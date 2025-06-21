@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: yas-bot-webapp
+  namespace: watchface
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(``) && PathPrefix(`/yas-bot/`)
+      kind: Rule
+      services:
+        - name: yas-bot-webapp
+          port: 8080
+          namespace: sailingapp
+  tls:
+    secretName: watchface-tls
