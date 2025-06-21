@@ -35,13 +35,15 @@ show_usage() {
     echo "Usage: $0 <overlay-name>"
     echo ""
     echo "Available overlays:"
-    if [ -d "webapp/overlays" ]; then
-        for overlay in webapp/overlays/*/; do
-            overlay_name=$(basename "$overlay")
-            echo "  - $overlay_name"
+    if [ -d "$SCRIPT_DIR/webapp/overlays" ]; then
+        for overlay in "$SCRIPT_DIR/webapp/overlays"/*; do
+            if [ -d "$overlay" ]; then
+                overlay_name=$(basename "$overlay")
+                echo "  - $overlay_name"
+            fi
         done
     else
-        echo "  No overlays found in webapp/overlays/"
+        echo "  No overlays found in $SCRIPT_DIR/webapp/overlays/"
     fi
     echo ""
     echo "Example: $0 hetzner"
@@ -56,18 +58,17 @@ fi
 
 OVERLAY_NAME="$1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEPLOY_DIR="$(dirname "$SCRIPT_DIR")"
-PROJECT_ROOT="$(dirname "$DEPLOY_DIR")"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Paths
 KUBECONFIG_PATH="$HOME/remote-kube/$OVERLAY_NAME/config"
 ARGOCD_TEMPLATE="$SCRIPT_DIR/init/argocd.yaml"
 ARGOCD_TEMP="/tmp/argocd-$OVERLAY_NAME-$(date +%s).yaml"
-OVERLAY_PATH="$DEPLOY_DIR/webapp/overlays/$OVERLAY_NAME"
+OVERLAY_PATH="$SCRIPT_DIR/webapp/overlays/$OVERLAY_NAME"
 
 log_info "Starting deployment for overlay: $OVERLAY_NAME"
 log_info "Project root: $PROJECT_ROOT"
-log_info "Deploy directory: $DEPLOY_DIR"
+log_info "Script directory: $SCRIPT_DIR"
 
 # Validate overlay exists
 if [ ! -d "$OVERLAY_PATH" ]; then

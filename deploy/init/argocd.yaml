@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/Laverlin/yas-bot-webapp.git'
-    path: "/deploy/webapp/overlays/<overlay-name>"
+    path: "deploy/webapp/overlays/<overlay-name>"
     targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
